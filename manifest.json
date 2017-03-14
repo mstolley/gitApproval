@@ -1,0 +1,27 @@
+{
+  "manifest_version": 2,
+  "name": "Git Approval",
+  "description": "This extension adds new features to GE github, such as
+    showing how many thumbs ups a PR has and converting an SSO to the user's
+    name defined in their profile",
+  "version": "1.0",
+  "content_scripts": [
+    {
+      "matches": [
+        "https://github.build.ge.com/*/pulls",
+        "https://github.build.ge.com/*/pulls?*",
+        "https://github.build.ge.com/pulls?*"
+      ],
+      "js": ["findThumbs.js"]
+    }
+  ],
+  "background": {
+    "scripts": ["background.js"]
+  },
+  "permissions": [
+    "https://github.build.ge.com/*",
+    "tabs",
+    "webNavigation",
+    "storage"
+  ]
+}
