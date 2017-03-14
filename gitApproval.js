@@ -12,6 +12,9 @@
 * https://github.com/blog/2119-add-reactions-to-pull-requests-issues-and-comments
 **********/
 
+
+var approvalNumber;
+
 function iteratePRs() {
     var pullRequests = document.getElementsByClassName('js-issue-row');
 
@@ -22,16 +25,14 @@ function iteratePRs() {
 }
 
 function parseCommentsForPR(prElement) {
-    var issuePath = prElement.getElementsByClassName('Box-row-link')[0].href;
+    var issuePath = prElement.getElementsByClassName('js-navigation-open')[0].href;
     // path: /:owner/:repo/pull/:number
     var tokens = issuePath.split('/');
-    var owner = tokens[3];
-    var repo = tokens[4];
     var number = tokens[6];
-    // Set host from settings
-    var prUrl = 'https://github.build.ge.com/' + owner + '/' + repo + '/pull/' + number;
-
+    var prUrl = 'pull/' + number;
     var http = new XMLHttpRequest();
+
+    console.log('approvalNumber: ', approvalNumber);
 
     http.onreadystatechange = function() {
         if(http.readyState === 4 && http.status === 200) {
@@ -44,7 +45,7 @@ function parseCommentsForPR(prElement) {
             }
 
             // Set approvalNumber from settings
-            if(numThumbs >= 2) {
+            if(numThumbs >= approvalNumber) {
                 prElement.style.backgroundColor = '#e1f3d8';
             }
         }
@@ -83,10 +84,13 @@ function renderThumbs(prElement, numThumbs) {
         var thumb = document.createElement('span');
 
         thumb.className = 'thumbs-up';
-        // Set host from settings?
         thumb.innerHTML = '<img class="emoji" title="+1" alt="+1" src="https://github.com/images/icons/emoji/unicode/1f44d.png" height="16" width="16" align="absmiddle">';
         titleBlock.appendChild(thumb);
     }
 }
 
-iteratePRs();
+chrome.storage.sync.get("approvalNumber", function(data) {
+    approvalNumber = data.approvalNumber;
+
+    iteratePRs();
+});
