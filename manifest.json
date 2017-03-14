@@ -14,7 +14,7 @@
         "https://github.com/*/pulls?*",
         "https://github.com/pulls?*"
       ],
-      "js": ["findThumbs.js"]
+      "js": ["gitApproval.js"]
     }
   ],
   "background": {
