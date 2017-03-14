@@ -32,8 +32,6 @@ function parseCommentsForPR(prElement) {
     var prUrl = 'pull/' + number;
     var http = new XMLHttpRequest();
 
-    console.log('approvalNumber: ', approvalNumber);
-
     http.onreadystatechange = function() {
         if(http.readyState === 4 && http.status === 200) {
             if(!isIncomplete(http.responseText)) {
