@@ -14,6 +14,7 @@
 
 
 var approvalNumber;
+var host;
 
 function iteratePRs() {
     var pullRequests = document.getElementsByClassName('js-issue-row');
@@ -28,8 +29,11 @@ function parseCommentsForPR(prElement) {
     var issuePath = prElement.getElementsByClassName('js-navigation-open')[0].href;
     // path: /:owner/:repo/pull/:number
     var tokens = issuePath.split('/');
+    var owner = tokens[3];
+    var repo = tokens[4];
     var number = tokens[6];
-    var prUrl = 'pull/' + number;
+    // Set host from settings
+    var prUrl = host + '/' + owner + '/' + repo + '/pull/' + number;
     var http = new XMLHttpRequest();
 
     http.onreadystatechange = function() {
@@ -87,7 +91,8 @@ function renderThumbs(prElement, numThumbs) {
     }
 }
 
-chrome.storage.sync.get("approvalNumber", function(data) {
+chrome.storage.sync.get(["host", "approvalNumber"], function(data) {
+    host = data.host;
     approvalNumber = data.approvalNumber;
 
     iteratePRs();
