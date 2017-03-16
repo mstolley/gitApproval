@@ -14,13 +14,37 @@
     </p>
     <p>
         <label for="approvalNumber">Number of desired approvals</label>
-        <input type="text" id="approvalNumber" placeholder="2" />
+        <input type="number" id="approvalNumber" placeholder="2" min="1" max="5" />
+    </p>
+
+    <h5>Changing options below may break the extension</h5>
+    <p>
+        <label for="prElementClass">prElement Class</label>
+        <input type="text" id="prElementClass" placeholder="js-navigation-open" />
+    </p>
+    <p>
+        <label for="titleBlockClass">titleBlock Class</label>
+        <input type="text" id="titleBlockClass" placeholder="titleBlock" />
+    </p>
+    <p>
+        <label for="approvalClass">Approval Class</label>
+        <input type="text" id="approvalClass" placeholder="thumbs-up" />
+    </p>
+    <p>
+        <label for="approvalImg">Approval Image</label>
+        <input type="text" id="approvalImg" placeholder="https://github.com/images/icons/emoji/unicode/1f44d.png" />
+    </p>
+    <p>
+        <label for="approvalColor">Approval Color</label>
+        <input type="color" id="approvalColor" value="#e1f3d8" />
     </p>
 
     <div id="status"></div>
-    <p>
-        <button id="save">Save</button>
-    </p>
+
+    <div style="margin-top: 20px;">
+        <button id="reset">Reset</button>
+        <button id="save" style="float: right;">Save</button>
+    </div>
 
     <script src="options.js"></script>
 </body>

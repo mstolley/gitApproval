@@ -5,28 +5,33 @@
 *
 * It first reads the DOM to find pull requests.
 * Then, if there are comments on the PR, a call is made to get the comments from each listed PR.
-* Those comments are parsed to find the number of thumbs ups given.
+* Those comments are parsed to find the number of approvals given.
 *
 * This extension may soon be obsolete, as a new github API called "reactions"
 * is currently in beta.
 * https://github.com/blog/2119-add-reactions-to-pull-requests-issues-and-comments
 **********/
 
-
-var approvalNumber;
 var host;
+var approvalNumber;
+var prElementClass;
+var titleBlockClass;
+var approvalClass;
+var approvalImg;
+var approvalColor;
 
 function iteratePRs() {
     var pullRequests = document.getElementsByClassName('js-issue-row');
 
-    removeExistingThumbs();
+    removeExistingApprovals();
     for (i = 0; i < pullRequests.length; i++) {
         parseCommentsForPR(pullRequests[i]);
     }
 }
 
 function parseCommentsForPR(prElement) {
-    var issuePath = prElement.getElementsByClassName('js-navigation-open')[0].href;
+    var issuePath = prElement.getElementsByClassName(prElementClass)[0].href;
+
     // path: /:owner/:repo/pull/:number
     var tokens = issuePath.split('/');
     var owner = tokens[3];
@@ -39,16 +44,15 @@ function parseCommentsForPR(prElement) {
     http.onreadystatechange = function() {
         if(http.readyState === 4 && http.status === 200) {
             if(!isIncomplete(http.responseText)) {
-                var numThumbs = getNumberOfApprovals(http.responseText);
+                var numApprovals = getNumberOfApprovals(http.responseText);
             };
 
-            if(numThumbs) {
-                renderThumbs(prElement, numThumbs);
+            if(numApprovals) {
+                renderApprovals(prElement, numApprovals);
             }
 
-            // Set approvalNumber from settings
-            if(numThumbs >= approvalNumber) {
-                prElement.style.backgroundColor = '#e1f3d8';
+            if(numApprovals >= approvalNumber) {
+                prElement.style.backgroundColor = approvalColor;
             }
         }
     }
@@ -57,11 +61,11 @@ function parseCommentsForPR(prElement) {
     http.send(null);
 }
 
-function removeExistingThumbs() {
-    var existingThumbs = document.getElementsByClassName('thumbs-up');
+function removeExistingApprovals() {
+    var existingApprovals = document.getElementsByClassName(approvalClass);
 
-    while(existingThumbs[0]) {
-        existingThumbs[0].remove();
+    while(existingApprovals[0]) {
+        existingApprovals[0].remove();
     }
 }
 
@@ -79,21 +83,26 @@ function getNumberOfApprovals(text) {
     return approvals;
 }
 
-function renderThumbs(prElement, numThumbs) {
-    var titleBlock = prElement.getElementsByClassName('issue-pr-status')[0];
+function renderApprovals(prElement, numApprovals) {
+    var titleBlock = prElement.getElementsByClassName(titleBlockClass)[0];
 
-    for(var i = 0; i < numThumbs; i++) {
-        var thumb = document.createElement('span');
+    for(var i = 0; i < numApprovals; i++) {
+        var approvalElement = document.createElement('span');
 
-        thumb.className = 'thumbs-up';
-        thumb.innerHTML = '<img class="emoji" title="+1" alt="+1" src="https://github.com/images/icons/emoji/unicode/1f44d.png" height="16" width="16" align="absmiddle">';
-        titleBlock.appendChild(thumb);
+        approvalElement.className = approvalClass;
+        approvalElement.innerHTML = '<img class="emoji" title="+1" alt="+1" src="' + approvalImg + '" height="16" width="16" align="absmiddle">';
+        titleBlock.appendChild(approvalElement);
     }
 }
 
-chrome.storage.sync.get(["host", "approvalNumber"], function(data) {
+chrome.storage.sync.get(["host", "approvalNumber", "prElementClass", "titleBlockClass", "approvalClass", "approvalImg", "approvalColor"], function(data) {
     host = data.host;
     approvalNumber = data.approvalNumber;
+    prElementClass = data.prElementClass;
+    titleBlockClass = data.titleBlockClass;
+    approvalClass = data.approvalClass;
+    approvalImg = data.approvalImg;
+    approvalColor = data.approvalColor;
 
     iteratePRs();
 });
