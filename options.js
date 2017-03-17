@@ -42,6 +42,14 @@ function restore_options() {
         document.getElementById('approvalColor').value = items.approvalColor;
     });
 }
+
+function toggleExtraOptions() {
+    var elements = document.getElementsByClassName('extra');
+    for(i=0;i<elements.length;i++) {
+        elements[i].disabled = !elements[i].disabled;
+    }
+}
 document.addEventListener('DOMContentLoaded', restore_options);
 document.getElementById('reset').addEventListener('click', restore_options);
 document.getElementById('save').addEventListener('click', save_options);
+document.getElementById('cbExtraOptions').addEventListener('change', toggleExtraOptions);
