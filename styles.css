@@ -1,0 +1,23 @@
+.content-wrapper { margin: 0 auto; width: 360px; }
+label {
+    display: inline-block;
+    width: 135px;
+    text-align: right;
+    margin-right: 5px;
+    font-weight: bold;
+}
+input { width: 215px; }
+#approvalNumber, #approvalColor { width: 40px; }
+.extra-header {margin-top: 20px;}
+.extra-header h5 {
+    display: inline-block;
+    float: left;
+    margin-top: 3px;
+}
+.extra-header .extra-enable {
+    display: inline-block;
+    float: right;
+}
+.extra-header .extra-enable label { width: 50px; }
+.actions { margin-top: 40px; }
+#save { float: right; }
